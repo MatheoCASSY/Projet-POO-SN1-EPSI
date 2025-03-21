@@ -19,6 +19,7 @@ class Character:
     def show_healthbar(self):
         # print
             # [oooooo              ] 6/14 hp
+        print(f"[{'o' * self.hp}{' ' * (self.max_hp - self.hp)}] {self.hp}/{self.max_hp} hp")
         pass
 
     def attack(self):
@@ -36,3 +37,4 @@ if __name__ == "__main__":
 
     char_1.attack()
     char_1.defense()
+
