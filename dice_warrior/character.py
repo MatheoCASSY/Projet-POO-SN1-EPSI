@@ -12,13 +12,16 @@ class Character:
 
     # __str__
 
-    def is_alive(self):
-        pass
+    def is_alive(self, hp):
+        self.hp = hp
+        if self.hp <= 0:
+            print(f"HP = {self.hp}, your charachter is dead!")
+            return False
+        else: return True
 
     def show_healthbar(self):
-        pass
-        # print
-            # [oooooo              ] 6/14 hp
+        print(f"[{self.hp * "o"}] {self.hp}/{self.max_hp}hp")
+
 
     def attack(self):
         print(f"Attack value: {self.attack_value + self.dice.roll()}")
@@ -35,3 +38,4 @@ if __name__ == "__main__":
 
     char_1.attack()
     char_1.defense()
+    char_1.is_alive()
