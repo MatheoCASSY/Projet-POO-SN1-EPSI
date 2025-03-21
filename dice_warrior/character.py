@@ -1,6 +1,5 @@
 from dice import Dice
 
-
 class Character:
     def __init__(self, name, max_hp, attack_value, defense_value, dice):
         self.name = name
@@ -13,12 +12,14 @@ class Character:
     # __str__
 
     def is_alive(self):
-        pass
+        if self.hp > 0:
+            return True
+        return False
 
     def show_healthbar(self):
-        pass
         # print
             # [oooooo              ] 6/14 hp
+        pass
 
     def attack(self):
         print(f"Attack value: {self.attack_value + self.dice.roll()}")
