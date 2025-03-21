@@ -16,6 +16,7 @@ class Character:
         self.hp = hp
         return self.hp > 0
     
+    
     def decrease_hp(self, amount):
         self.hp -= amount
         self.show_healthbar()
