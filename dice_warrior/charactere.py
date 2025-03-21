@@ -15,6 +15,10 @@ class Character:
     def is_alive(self, hp):
         self.hp = hp
         return self.hp > 0
+    
+    def decrease_hp(self, amount):
+        self.hp -= amount
+        self.show_healthbar()
 
     def show_healthbar(self):
         print(f"[{self.hp * "o"}{" "*{self.max_hp - self.hp}}] {self.hp}/{self.max_hp}hp")
