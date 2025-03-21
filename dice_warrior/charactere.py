@@ -10,17 +10,14 @@ class Character:
         self.defense_value = defense_value
         self.dice = dice
 
-    # __str__
+    #__str__
 
     def is_alive(self, hp):
         self.hp = hp
-        if self.hp <= 0:
-            print(f"HP = {self.hp}, your charachter is dead!")
-            return False
-        else: return True
+        return self.hp > 0
 
     def show_healthbar(self):
-        print(f"[{self.hp * "o"}] {self.hp}/{self.max_hp}hp")
+        print(f"[{self.hp * "o"}{" "*{self.max_hp - self.hp}}] {self.hp}/{self.max_hp}hp")
 
 
     def attack(self):
