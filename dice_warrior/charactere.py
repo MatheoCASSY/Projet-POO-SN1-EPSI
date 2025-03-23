@@ -67,6 +67,9 @@ class Mage(Character):
 
 class Thief(Character):
     label = "thief"
+    def compute_defend(self, damages, roll):
+        print("🗡️ Thief bonus: ignore l'armure de l'ennemi !")
+        # return super().compute_defend( roll) 
 
     # ignore la défense de son adversaire (physique)
 
@@ -74,14 +77,14 @@ class Thief(Character):
 if __name__ == "__main__":
     print("\n")
 
-    char_1 = Warrior("James", 20, 8, 3, Dice("red", 6))
+    char_1 = Thief("James", 20, 8, 3, Dice("red", 6))
     char_2 = Mage("Elsa", 20, 8, 3, Dice("red", 6))
 
-    # print(char_1)
-    # print(char_2)
+    print(char_1)
+    print(char_2)
 
-    # char_1.attack(char_2)
+    char_1.attack(char_2)
 
-    while (char_1.is_alive() and char_2.is_alive()):
-        char_1.attack(char_2)
-        char_2.attack(char_1)
+    # while (char_1.is_alive() and char_2.is_alive()):
+    #     char_1.attack(char_2)
+    #     char_2.attack(char_1)
