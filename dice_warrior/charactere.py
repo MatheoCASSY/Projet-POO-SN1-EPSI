@@ -40,7 +40,8 @@ class Character:
         target.defend(damages)
 
     def compute_defend(self, damages, roll):
-        return damages - self.defend_value - roll
+        return max(0, damages - self.defend_value - roll)  
+
 
     def defend(self, damages):
         roll = self.dice.roll()
@@ -61,17 +62,19 @@ class Mage(Character):
     label = "mage"
 
     def compute_defend(self, damages, roll):
+        wounds = super().compute_defend(damages, roll) - 3  
         print("🔮 Mage bonus : -3 wounds")
-        return super().compute_defend(damages, roll) - 3
+        return max(0, wounds)
     
 
 class Thief(Character):
     label = "thief"
+
     def compute_defend(self, damages, roll):
         print("🗡️ Thief bonus: ignore l'armure de l'ennemi !")
-        # return super().compute_defend( roll) 
-
-    # ignore la défense de son adversaire (physique)
+        wounds = max(0, damages - roll)  
+        return wounds
+    # ignore la défense de son adversaire (physique) 
 
 
 if __name__ == "__main__":
