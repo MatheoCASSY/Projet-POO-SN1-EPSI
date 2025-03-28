@@ -6,16 +6,17 @@ from rich import print
 class Character:
     label = "character"
 
-    def __init__(self, name, max_hp, attack_value, defend_value, dice):
+    def __init__(self, name, max_hp, attack_value, defend_value, dice, level_value):
         self.name = name
         self.max_hp = max_hp
         self.hp = max_hp
         self.attack_value = attack_value
         self.defend_value = defend_value
         self.dice = dice
+        self.level_value = level_value
 
     def __str__(self):
-        return f"I'm {self.name} the {self.label}."
+        return f"I'm {self.name} the {self.label}. I am level {self.level}"# ajouter le lvl et l'xp
 
     def is_alive(self):
         return self.hp > 0
@@ -49,7 +50,9 @@ class Character:
         print(f"{self.name} [green]defend[/green] against {damages} and take {wounds} wounds ({damages} dmg - {self.defend_value} def - {roll} rng)")
         self.decrease_hp(wounds)
 
+    def level(self):pass
 
+    def xp(self):pass     # ✩ - ★  en pourcentage (afficher 5 etoiles et séparer en 20% par etoile)
 
 class Warrior(Character):
     label = "warrior"
@@ -154,8 +157,8 @@ class Healer(Character):
 if __name__ == "__main__":
     print("\n")
 
-    char_1 = Thief("James", 20, 8, 3, Dice("red", 6))
-    char_2 = Mage("Elsa", 20, 8, 3, Dice("red", 6))
+    char_1 = Thief("James", 20, 8, 3, Dice("red", 6), 5)
+    char_2 = Mage("Elsa", 20, 8, 3, Dice("red", 6), 5)
 
     print(char_1)
     print(char_2)
