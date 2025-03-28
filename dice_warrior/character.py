@@ -84,6 +84,14 @@ class Character:
         print(f"{self.name} [green]defend[/green] against {damages} and take {wounds} wounds ({damages} dmg - {self.defend_value} def - {roll} rng)")
         self.decrease_hp(wounds)
 
+    def equip(self, item):
+        item.apply_bonus(self)
+        self.equipment.append(item)
+
+    def unequip(self, item):
+        item.remove_bonus(self)
+        self.equipment.remove(item)
+
 class Warrior(Character):
     label = "warrior"
 
@@ -137,7 +145,7 @@ class Berserker(Character):
 class Healer(Character):
     label = "healer"
 
-    def __init__(self, name, max_hp, attack_value, defend_value, dice, characters):
+    def __init__(self, name, max_hp, attack_value, defend_value, dice, xp,level):
         super().__init__(name, max_hp, attack_value, defend_value, dice)
         self.allies = [char for char in characters if char is not self]
 

@@ -1,4 +1,4 @@
-from character import Character
+from character import *
 
 class Universal_Item:
     label = "universal_item"
@@ -44,6 +44,59 @@ class Universal_Item:
                 self.remove_bonus(character)
 
 
+class Allowed_Item:
+    label = "Allowed_item"
+
+    def __init__(self, name, durability_max, attack_value, defend_value, allowed_classes):
+        self.name = name
+        self.durability_max = durability_max
+        self.durability = durability_max
+        self.attack_value = attack_value
+        self.defend_value = defend_value
+        self.allowed_classes = allowed_classes  # Liste des classes autorisées
+
+    def __str__(self):
+        return f"I'm {self.name} the {self.label}."
+
+    def is_usable(self):
+        return self.durability > 0
+
+    def decrease_durability(self, amount):
+        self.durability = max(0, self.durability - amount)
+        self.show_durability()
+
+    def show_durability(self):
+        print(f"[{'🛡️' * self.durability}{'⛉' * (self.durability_max - self.durability)}] {self.durability}/{self.durability_max} durability  ----->   {self.name}")
+        print("\n")
+
+    def apply_bonus(self, character):
+        if self.is_usable():
+            # Vérification si le personnage appartient à une des classes autorisées
+            if character.label in self.allowed_classes:
+                print(f"🛡️ {character.name} equipped {self.name}, gaining +{self.defend_value} DEF and +{self.attack_value} ATK!")
+                character.defend_value += self.defend_value
+                character.attack_value += self.attack_value
+            else:
+                print(f"⚠️ {character.name} cannot equip {self.name}, it's restricted to {', '.join(self.allowed_classes)}!")
+        else:
+            print(f"⚠️ {self.name} is broken and provides no bonus!")
+
+    def remove_bonus(self, character):
+        print(f"⚠️ {character.name} removed {self.name}, losing -{self.defend_value} DEF and -{self.attack_value} ATK!")
+        character.defend_value -= self.defend_value
+        character.attack_value -= self.attack_value
+
+    def use(self, character):
+        if self.is_usable():
+            self.decrease_durability(1)
+            if self.durability == 0:
+                self.remove_bonus(character)
+
+
+
+
+
+
 class Helmet(Universal_Item):
     label = "Helmet"
 
@@ -58,25 +111,77 @@ class Sword(Universal_Item):
         super().__init__(name, durability_max, attack_value=attack_value, defend_value=0)
 
 
+class Armor(Universal_Item):
+    label = "Armor"
+
+    def __init__(self, name, durability_max, defend_value):
+        super().__init__(name, durability_max, attack_value=0, defend_value=defend_value)
+
+
+class Shield(Universal_Item):
+    label = "Shield"
+
+    def __init__(self, name, durability_max, defend_value):
+        super().__init__(name, durability_max, attack_value=0, defend_value=defend_value)
+
+
+class Bow(Universal_Item):
+    label = "Bow"
+
+    def __init__(self, name, durability_max, attack_value):
+        super().__init__(name, durability_max, attack_value=attack_value, defend_value=0)
+
+
+class Dagger(Universal_Item):
+    label = "Dagger"
+
+    def __init__(self, name, durability_max, attack_value):
+        super().__init__(name, durability_max, attack_value=attack_value, defend_value=0)
+
+
+class Staff(Universal_Item):
+    label = "Staff"
+
+    def __init__(self, name, durability_max, attack_value, defend_value):
+        super().__init__(name, durability_max, attack_value=attack_value, defend_value=defend_value)
+
+
+class Ring(Universal_Item):
+    label = "Ring"
+
+    def __init__(self, name, durability_max, attack_value, defend_value):
+        super().__init__(name, durability_max, attack_value=attack_value, defend_value=defend_value)
+
+
+class Boots(Universal_Item):
+    label = "Boots"
+
+    def __init__(self, name, durability_max, defend_value):
+        super().__init__(name, durability_max, attack_value=0, defend_value=defend_value)
+
+
+
 if __name__ == "__main__":
-    # Définir les objets avec des statistiques spécifiques
-    helmet = Helmet("Casque en acier", durability_max=10, defend_value=3)  # Défense élevée
-    sword = Sword("Épée légendaire", durability_max=15, attack_value=5)   # Attaque élevée
+    shield = Allowed_Item("Bouclier de bois", durability_max=12, attack_value=0, defend_value=4, allowed_classes=["paladin"])
+    bow = Allowed_Item("Arc en bois", durability_max=18, attack_value=7, defend_value=0, allowed_classes=["archer"])
+    dagger = Allowed_Item("Dague acérée", durability_max=10, attack_value=6, defend_value=0, allowed_classes=["thief"])
+    staff = Allowed_Item("Bâton magique", durability_max=8, attack_value=4, defend_value=2, allowed_classes=["mage", "healer"])
 
-    print(helmet)  # Affiche Helmet
-    print(sword)   # Affiche Sword
+    # Créer des personnages
+    char_1 = Warrior("James", 20, 8, 3, Dice("red", 6),0,1)
+    char_2 = Mage("Elsa", 20, 8, 3, Dice("red", 6),0,1)
+    char_3 = Thief("Robin", 18, 7, 2, Dice("red", 6),0,1)
+    char_4 = Paladin("Arthur", 22, 7, 5, Dice("blue", 6),0,1)
+    char_5 = Ranger("Lina", 19, 9, 2, Dice("green", 6),0,1)
+    char_6 = Berserker("Grog", 25, 10, 1, Dice("red", 6),0,1)
+    char_7 = Healer("Sophia", 18, 5, 4, Dice("yellow", 6),0,1)
+    char_8 = Gamester("Jack", 19, 6, 3, Dice("purple", 6),0,1)
+    # Liste des items
+    items = [shield, bow, dagger, staff]
 
-    # Exemple d'utilisation des items sur un personnage
-    class Warrior(Character):
-        label = "warrior"
-
-    warrior = Warrior("James", 30, 10, 5, None, 0, 1)  # Exemple de warrior
-
-    # Appliquer l'équipement sur un personnage
-    helmet.apply_bonus(warrior)  # Applique les bonus de défense du casque
-    sword.apply_bonus(warrior)   # Applique les bonus d'attaque de l'épée
-
-    # Utiliser un item et afficher les stats
-    for _ in range(3):
-        helmet.use(warrior)
-        sword.use(warrior)
+    # Appliquer chaque item au personnage (uniquement si l'item est autorisé pour ce personnage)
+    for item in items:
+        item.apply_bonus(char_4)  # Test avec le paladin (seulement pour le bouclier)
+        item.apply_bonus(char_3)    # Test avec le voleur (seulement pour la dague)
+        item.apply_bonus(char_2)     # Test avec le mage (seulement pour le bâton)
+        item.apply_bonus(char_7)   # Test avec le soigneur (seulement pour le bâton)
