@@ -29,9 +29,6 @@ class Character:
     def show_healthbar(self):
         print(f"[{'❤️' * self.hp}{'♡' * (self.max_hp - self.hp)}] {self.hp}/{self.max_hp} hp")
 
-    def show_xpbar(self):
-        percent = int((self.xp / self.xp_needed) * 20)  
-        print(f"XP: [{'★' * percent}{'✩' * (20 - percent)}] {self.xp}/{self.xp_needed} xp")
 
     def compute_damages(self, roll):
         return self.attack_value + roll
@@ -87,22 +84,11 @@ class Character:
             print("❌ Choix invalide, aucun bonus attribué.")
 
 
-class Warrior(Character):
-    label = "warrior"
-
-    def compute_damages(self, roll):
-        print("🪓 Warrior bonus : +1,5 fois ses dmg")
-        return super().compute_damages(roll) + self.attack_value * 1.5
 
 
 
-class Mage(Character):
-    label = "mage"
 
-    def compute_defend(self, damages, roll):
-        wounds = super().compute_defend(damages, roll) - self.defend_value * 0.75
-        print("🔮 Mage bonus : -3 wounds")
-        return max(0, int(wounds))
+
 
 
 class Thief(Character):
