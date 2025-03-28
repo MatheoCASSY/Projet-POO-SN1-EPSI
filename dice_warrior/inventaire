@@ -1,0 +1,82 @@
+from character import Character
+
+class Universal_Item:
+    label = "universal_item"
+
+    def __init__(self, name, durability_max, attack_value, defend_value):
+        self.name = name
+        self.durability_max = durability_max
+        self.durability = durability_max
+        self.attack_value = attack_value
+        self.defend_value = defend_value
+
+    def __str__(self):
+        return f"I'm {self.name} the {self.label}."
+
+    def is_usable(self):
+        return self.durability > 0
+
+    def decrease_durability(self, amount):
+        self.durability = max(0, self.durability - amount)
+        self.show_durability()
+
+    def show_durability(self):
+        print(f"[{'🛡️' * self.durability}{'⛉' * (self.durability_max - self.durability)}] {self.durability}/{self.durability_max} durability  ----->   {self.name}")
+        print("\n")
+
+    def apply_bonus(self, character):
+        if self.is_usable():
+            print(f" {character.name} equipped {self.name}, gaining +{self.defend_value} DEF and +{self.attack_value} ATK!")
+            character.defend_value += self.defend_value
+            character.attack_value += self.attack_value
+        else:
+            print(f"⚠️ {self.name} is broken and provides no bonus!")
+
+    def remove_bonus(self, character):
+        print(f"⚠️ {character.name} removed {self.name}, losing -{self.defend_value} DEF and -{self.attack_value} ATK!")
+        character.defend_value -= self.defend_value
+        character.attack_value -= self.attack_value
+
+    def use(self, character):
+        if self.is_usable():
+            self.decrease_durability(1)
+            if self.durability == 0:
+                self.remove_bonus(character)
+
+
+class Helmet(Universal_Item):
+    label = "Helmet"
+
+    def __init__(self, name, durability_max, defend_value):
+        super().__init__(name, durability_max, attack_value=0, defend_value=defend_value)
+
+
+class Sword(Universal_Item):
+    label = "Sword"
+
+    def __init__(self, name, durability_max, attack_value):
+        super().__init__(name, durability_max, attack_value=attack_value, defend_value=0)
+
+
+if __name__ == "__main__":
+    # Définir les objets avec des statistiques spécifiques
+    helmet = Helmet("Casque en acier", durability_max=10, defend_value=3)  # Défense élevée
+    sword = Sword("Épée légendaire", durability_max=15, attack_value=5)   # Attaque élevée
+
+    print(helmet)  # Affiche Helmet
+    print(sword)   # Affiche Sword
+
+    # Exemple d'utilisation des items sur un personnage
+    class Warrior(Character):
+        label = "warrior"
+
+    warrior = Warrior("James", 30, 10, 5, None, 0, 1)  # Exemple de warrior
+
+    # Appliquer l'équipement sur un personnage
+    helmet.apply_bonus(warrior)  # Applique les bonus de défense du casque
+    sword.apply_bonus(warrior)   # Applique les bonus d'attaque de l'épée
+
+    # Utiliser un item et afficher les stats
+    for _ in range(3):
+        helmet.use(warrior)
+        sword.use(warrior)
