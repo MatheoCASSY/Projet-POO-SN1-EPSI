@@ -79,10 +79,10 @@ class Character:
             print(f"❤️ {self.name} gagne +5 HP max !")
         elif choice == "2":
             self.attack_value += 2
-            print(f"🗡 {self.name} gagne +2 en ATK !")
+            print(f"🔫 {self.name} gagne +2 en ATK !")
         elif choice == "3":
             self.defend_value += 2
-            print(f"🛡 {self.name} gagne +2 en DEF !")
+            print(f"🛡️ {self.name} gagne +2 en DEF !")
         else:
             print("❌ Choix invalide, aucun bonus attribué.")
 
