@@ -2,10 +2,6 @@ from dice import Dice
 from rich import print
 from character import *
 
-
-from dice import Dice
-from rich import print
-
 class Enemy:
     label = "enemy"
 
