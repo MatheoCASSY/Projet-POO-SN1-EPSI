@@ -1,5 +1,5 @@
 from dice import Dice
-from rich import print
+from rich import print  # Importation pour afficher du texte coloré
 
 
 class Character:
@@ -14,7 +14,7 @@ class Character:
         self.dice = dice
         self.level = level
         self.xp = 0
-        self.xp_needed = self.level * 10  # XP nécessaire pour monter de niveau
+        self.xp_needed = self.level * 10  
 
     def __str__(self):
         return f"I'm {self.name} the {self.label}. I am level {self.level}"
@@ -41,7 +41,7 @@ class Character:
         damages = self.compute_damages(roll)
         print(f"{self.name} [red]attack[/red] with {damages} damages ({self.attack_value} atk + {roll} rng)")
         target.defend(damages)
-        self.gain_xp(damages)
+        self.gain_xp(damages)   # Gagne de l'XP en fonction des dégâts infligés
 
     def compute_defend(self, damages, roll):
         return max(0, damages - self.defend_value - roll)
