@@ -11,6 +11,8 @@ class Character:
         self.attack_value = attack_value
         self.defend_value = defend_value
         self.dice = dice
+        self.xp = 0
+        self.level = 1
 
     def __str__(self):
         return f"I'm {self.name} the {self.label}."
@@ -26,6 +28,19 @@ class Character:
         print(f"[{'❤️' * self.hp}{'♡' * (self.max_hp - self.hp)}] {self.hp}/{self.max_hp} hp")
         print("\n")
 
+    def gain_xp(self, amount):
+        self.xp += amount
+        if self.xp >= self.level * 10:
+            self.level_up()
+
+    def level_up(self):
+        self.level += 1
+        self.max_hp += 2
+        self.hp = self.max_hp
+        self.attack_value += 1
+        self.defend_value += 1
+        print(f"{self.name} leveled up! Now at level {self.level}!")
+
     def compute_damages(self, roll):
         return self.attack_value + roll
 
@@ -34,6 +49,7 @@ class Character:
         damages = self.compute_damages(roll)
         print(f"{self.name} [red]attack[/red] with {damages} damages ({self.attack_value} atk + {roll} rng)")
         target.defend(damages)
+        self.gain_xp(2)
 
     def compute_defend(self, damages, roll):
         return max(0, damages - self.defend_value - roll)
@@ -70,6 +86,7 @@ class Thief(Character):
         damages = self.compute_damages(roll)
         print(f"{self.name} [red]attack[/red] with {damages} damages ({self.attack_value} atk + {roll} rng, ignores defense)")
         target.decrease_hp(damages)
+        self.gain_xp(2)
 
 class Paladin(Character):
     label = "paladin"
@@ -93,6 +110,22 @@ class Berserker(Character):
         print(f"🔥 Berserker fury: +{extra_damage} dmg based on missing HP")
         return super().compute_damages(roll) + extra_damage
 
+class Healer(Character):
+    label = "healer"
+
+    def heal(self, target):
+        heal_amount = self.dice.roll() + 3
+        target.hp = min(target.max_hp, target.hp + heal_amount)
+        print(f"✨ {self.name} heals {target.name} for {heal_amount} HP!")
+
+class Gamester(Character):
+    label = "gamester"
+
+    def gamble(self, target):
+        gamble_value = self.dice.roll()
+        print(f"🎲 {self.name} gambles and causes {gamble_value} random damage to {target.name}")
+        target.decrease_hp(gamble_value)
+
 if __name__ == "__main__":
     print("\n")
 
@@ -102,24 +135,17 @@ if __name__ == "__main__":
     char_4 = Paladin("Arthur", 22, 7, 5, Dice("blue", 6))
     char_5 = Ranger("Lina", 19, 9, 2, Dice("green", 6))
     char_6 = Berserker("Grog", 25, 10, 1, Dice("red", 6))
+    char_7 = Healer("Sophia", 18, 5, 4, Dice("yellow", 6))
+    char_8 = Gamester("Jack", 19, 6, 3, Dice("purple", 6))
 
-    print(char_1)
-    print(char_2)
-    print(char_3)
-    print(char_4)
-    print(char_5)
-    print(char_6)
+    characters = [char_1, char_2, char_3, char_4, char_5, char_6, char_7, char_8]
 
-    char_1.attack(char_2)
-    char_3.attack(char_1)
-    char_5.attack(char_6)
-    char_6.attack(char_4)
+    for char in characters:
+        print(char)
 
-    # test combat en boucle
-    while char_1.is_alive() and char_2.is_alive() and char_3.is_alive() and char_4.is_alive() and char_5.is_alive() and char_6.is_alive():
-        char_1.attack(char_2)
-        char_2.attack(char_3)
-        char_3.attack(char_4)
-        char_4.attack(char_5)
-        char_5.attack(char_6)
-        char_6.attack(char_1)
+    while all(c.is_alive() for c in characters):
+        for attacker, defender in zip(characters, characters[1:] + [characters[0]]):
+            if attacker.is_alive() and defender.is_alive():
+                attacker.attack(defender)
+        char_7.heal(characters[0])
+        char_8.gamble(characters[1])  
