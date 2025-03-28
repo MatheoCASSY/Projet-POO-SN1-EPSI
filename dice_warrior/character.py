@@ -115,10 +115,10 @@ if __name__ == "__main__":
     char_6.attack(char_4)
 
     # test combat en boucle
-while char_1.is_alive() and char_2.is_alive() and char_3.is_alive() and char_4.is_alive() and char_5.is_alive() and char_6.is_alive():
-    char_1.attack(char_2)
-    char_2.attack(char_3)
-    char_3.attack(char_4)
-    char_4.attack(char_5)
-    char_5.attack(char_6)
-    char_6.attack(char_1)
+    while char_1.is_alive() and char_2.is_alive() and char_3.is_alive() and char_4.is_alive() and char_5.is_alive() and char_6.is_alive():
+        char_1.attack(char_2)
+        char_2.attack(char_3)
+        char_3.attack(char_4)
+        char_4.attack(char_5)
+        char_5.attack(char_6)
+        char_6.attack(char_1)
