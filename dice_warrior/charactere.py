@@ -21,7 +21,7 @@ class Character:
         return self.hp > 0
 
     def decrease_hp(self, amount):
-        self.hp = max(0, self.hp - amount)
+        self.hp = max(0, int(self.hp - amount))
         self.show_healthbar()
 
     def show_healthbar(self):
@@ -55,17 +55,17 @@ class Warrior(Character):
     label = "warrior"
 
     def compute_damages(self, roll):
-        print("🪓 Warrior bonus : +3 dmg")
-        return super().compute_damages(roll) + 3
+        print("🪓 Warrior bonus : +1,5 fois ses dmg")
+        return super().compute_damages(roll) + self.attack_value * 1.5
 
 
 class Mage(Character):
     label = "mage"
 
     def compute_defend(self, damages, roll):
-        wounds = super().compute_defend(damages, roll) - 3  
+        wounds = super().compute_defend(damages, roll) - self.defend_value * 0.75
         print("🔮 Mage bonus : -3 wounds")
-        return max(0, wounds)
+        return max(0, int(wounds))
     
 
 class Thief(Character):
@@ -74,7 +74,7 @@ class Thief(Character):
     def compute_defend(self, damages, roll):
         print("🗡️ Thief bonus: ignore l'armure de l'ennemi !")
         wounds = max(0, damages - roll)  
-        return wounds
+        return int(wounds)
 
 
 
