@@ -88,7 +88,7 @@ class Warrior(Character):
     label = "warrior"
 
     def compute_damages(self, roll):
-        print("🪓 Warrior bonus : +1,5 fois ses dmg")
+        print("🪓 Warrior bonus : + 1,5 * dmg")
         return super().compute_damages(roll) + self.attack_value * 1.5
 
 class Mage(Character):
