@@ -39,3 +39,34 @@ if __name__ == "__main__":
     char_1.attack()
     char_1.defense()
     char_1.is_alive()
+
+    class Assassin(Character):
+     label = "assassin"
+
+    def __init__(self, name, max_hp, attack_value, defend_value, dice):
+        super().__init__(name, max_hp, attack_value, defend_value, dice)
+        self.poisoned_targets = {}  
+
+    def attack(self, target):
+        roll = self.dice.roll()
+        damage = self.compute_damages(roll)  
+        print(f" {self.name} attaque et inflige {damage} dégâts !")
+
+        
+        if roll > self.dice.faces // 2:  
+            poison_duration = 3  
+            poison_damage = 2  
+            self.poisoned_targets[target] = (poison_damage, poison_duration)  
+            print(f" {target.name} est empoisonné ! Il perdra {poison_damage} HP pendant {poison_duration} tours.")
+
+        target.defend(damage)  
+
+    def apply_poison_effects(self):
+        for target, (poison_damage, turns_left) in list(self.poisoned_targets.items()):
+            if turns_left > 0:
+                target.decrease_hp(poison_damage)  
+                print(f" {target.name} souffre du poison et perd {poison_damage} HP ! ({turns_left - 1} tours restants)")
+                self.poisoned_targets[target] = (poison_damage, turns_left - 1)  
+            else:
+                del self.poisoned_targets[target]  
+                print(f" {target.name} n'est plus empoisonné !")
