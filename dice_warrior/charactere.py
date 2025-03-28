@@ -77,6 +77,22 @@ class Thief(Character):
     # ignore la défense de son adversaire (physique) 
 
 
+class Gamester(Character):
+    label = "gamester"
+
+    def compute_damages(self, roll):
+        print("🎲 Gamester bonus: reroll dice ")
+
+        this_roll = super().compute_damages(roll)
+        a = input(f"Votre roll d'attaque est de {this_roll}. Si vous voulez le modifier, pressez X >>> ")
+        if a.lower() == "x":
+            roll = self.dice.roll()  
+            print(f"🎲 Nouveau roll: {roll}")
+            return super().compute_damages(roll)
+
+    # peut relancer une fois son dès par tour
+
+
 if __name__ == "__main__":
     print("\n")
 
