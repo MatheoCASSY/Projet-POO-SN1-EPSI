@@ -28,7 +28,7 @@ class Boss(Character):
     label = "boss"
 
     def compute_damages(self, roll):
-        extra_damage = roll // 2  # Boss has stronger attack scaling
+        extra_damage = roll // 2
         print(f"👹 Boss's wrath: +{extra_damage} dmg")
         return super().compute_damages(roll) + extra_damage
 

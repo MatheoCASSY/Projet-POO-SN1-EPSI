@@ -24,6 +24,7 @@ class Character:
 
     def show_healthbar(self):
         print(f"[{'❤️' * self.hp}{'♡' * (self.max_hp - self.hp)}] {self.hp}/{self.max_hp} hp")
+        print("\n")
 
     def compute_damages(self, roll):
         return self.attack_value + roll
