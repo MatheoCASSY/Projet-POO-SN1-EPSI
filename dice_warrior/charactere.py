@@ -49,6 +49,7 @@ class Character:
         print(f"{self.name} [green]defend[/green] against {damages} and take {wounds} wounds ({damages} dmg - {self.defend_value} def - {roll} rng)")
         self.decrease_hp(wounds)
 
+    def allies(self,): pass
 
 class Warrior(Character):
     label = "warrior"
@@ -84,13 +85,60 @@ class Gamester(Character):
         print("🎲 Gamester bonus: reroll dice ")
 
         this_roll = super().compute_damages(roll)
-        a = input(f"Votre roll d'attaque est de {this_roll}. Si vous voulez le modifier, pressez X >>> ")
-        if a.lower() == "x":
+        r = input(f"Votre roll d'attaque est de {this_roll}. Si vous voulez le modifier, pressez X >>> ")
+        if r.lower() == "x":
             roll = self.dice.roll()  
             print(f"🎲 Nouveau roll: {roll}")
             return super().compute_damages(roll)
 
-    # peut relancer une fois son dès par tour
+
+
+class Healer(Character):
+    label = "healer"
+
+    def heal(self, target):
+        roll = self.dice.roll()
+        heal_amount = 0
+
+        print("⚕️ Healer bonus : peut soigner en fonction de son attaque.")
+
+        if roll < self.dice.faces * 0.1:
+            print("❌ Échec du soin !")
+        elif self.dice.faces * 0.1 <= roll < self.dice.faces * 0.25:
+            heal_amount = self.attack_value // 4
+            print(f"✨ Soin réussi : {heal_amount} points de vie restaurés (1/4 de l'attaque).")
+        elif self.dice.faces * 0.25 <= roll < self.dice.faces * 0.5:
+            heal_amount = self.attack_value // 2
+            print(f"💖 Soin réussi : {heal_amount} points de vie restaurés (1/2 de l'attaque).")
+        elif self.dice.faces * 0.5 <= roll < self.dice.faces * 0.99:
+            heal_amount = (self.attack_value * 3) // 4
+            print(f"💖💖 Soin réussi : {heal_amount} points de vie restaurés (3/4 de l'attaque).")
+        elif roll == self.dice.faces:
+            heal_amount = self.attack_value
+            print(f"💖💖💖 Soin parfait ! {heal_amount} points de vie restaurés (100% de l'attaque).")
+
+        target.hp = min(target.max_hp, target.hp + heal_amount)
+        target.show_healthbar()
+
+    def attack(self, target):
+        action = input("Voulez-vous attaquer (A) ou soigner (S) ? >>> ").lower()
+
+        if action == "s":
+            heal_target = input("Voulez-vous vous soigner vous-même (M) ou un allié (A) ? >>> ").lower()
+            if heal_target == "m":
+                self.heal(self)
+            else:
+                ally_name = input("Entrez le nom de l'allié à soigner : ")
+                for ally in allies :
+                    if ally.name.lower() == ally_name.lower():
+                        self.heal(ally)
+                        break
+                else:
+                    print("⚠️ Aucun allié trouvé avec ce nom !")
+        else:
+            super().attack(target)
+
+
 
 
 if __name__ == "__main__":
