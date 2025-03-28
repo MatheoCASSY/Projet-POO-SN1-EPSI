@@ -1,5 +1,6 @@
 from dice import Dice
 from rich import print
+from inventaire import Universal_Item
 
 class Character:
     label = "character"
