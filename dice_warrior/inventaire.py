@@ -55,25 +55,10 @@ class Inventaire:
     def show_equipped(self):
         print_equipped(self.equipped_items)
 
-
-if __name__ == "__main__":
-    # Création des personnages avec leur inventaire
-    char_1 = Warrior("James", 20, 8, 3, Dice("red", 6), 1, 1)
-    char_2 = Mage("Merlin", 80, 10, 5, Dice("bleu", 6), 1, 1)
-
-    # Création des objets
-    helmet = Helmet("Steel Helmet", 10, defend_value=3, attack_value=0, heal_amount=0)
-    sword = Sword("Legendary Sword", 15, defend_value=0, attack_value=5, heal_amount=0)
-    heal_potion = Heal_potion("Extrait de Jouvence", 5)
-
-    # Ajout des objets à l'inventaire des personnages
-    char_1.inventory.add_item(helmet)
-    char_1.inventory.add_item(sword)
-    char_2.inventory.add_item(heal_potion)
-
+def gerer_personnage(char_1, char_2):
     while True:
         # 🔹 Choix du personnage avant l'action
-        print("\n[1] James (Guerrier) [2] Merlin (Mage) [3] Quitter")
+        print(f"[1] Quitter [2] {char_1.name} ({char_1.label}) [3] {char_2.name} ({char_2.label}) ")
         character_choice = input("Quel personnage voulez-vous gérer ? : ").strip()
 
         if character_choice == "1":
@@ -109,3 +94,23 @@ if __name__ == "__main__":
                 break  # Sort de la boucle interne pour choisir un autre personnage
             else:
                 print("❌ Option invalide, essayez encore !")
+
+
+
+if __name__ == "__main__":
+    # Création des personnages avec leur inventaire
+    char_1 = Warrior("James", 20, 8, 3, Dice("red", 6), 1, 1)
+    char_2 = Mage("Merlin", 80, 10, 5, Dice("bleu", 6), 1, 1)
+
+    # Création des objets
+    helmet = Helmet("Steel Helmet", 10, defend_value=3, attack_value=0, heal_amount=0)
+    sword = Sword("Legendary Sword", 15, defend_value=0, attack_value=5, heal_amount=0)
+    heal_potion = Heal_potion("Extrait de Jouvence", 5)
+
+    # Ajout des objets à l'inventaire des personnages
+    char_1.inventory.add_item(helmet)
+    char_1.inventory.add_item(sword)
+    char_2.inventory.add_item(heal_potion)
+
+    # 🔹 Appel de la fonction pour gérer les personnages
+    gerer_personnage(char_1, char_2)
