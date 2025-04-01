@@ -2,11 +2,12 @@ from dice import Dice
 from rich import print
 from item import Universal_Item
 from ui import *
+from inventaire import *
 
 class Character:
     label = "character"
 
-    def __init__(self, name, max_hp, attack_value, defend_value, dice,xp,level):
+    def __init__(self, name, max_hp, attack_value, defend_value, dice,xp = 0,level = 1,xp_needed = 10,inventory = []):
         self.name = name
         self.max_hp = max_hp
         self.hp = max_hp
@@ -15,6 +16,8 @@ class Character:
         self.dice = dice
         self.xp = 0
         self.level = 1
+        self.xp_needed = 10
+        self.inventory = inventory if inventory else Inventaire()
 
     def __str__(self):
         return f"I'm {self.name} the {self.label}."
@@ -142,7 +145,7 @@ class Healer(Character):
 
     def __init__(self, name, max_hp, attack_value, defend_value, dice, xp,level):
         super().__init__(name, max_hp, attack_value, defend_value, dice)
-        self.allies = [char for char in characters if char is not self]
+        self.allies = [char for char in Character if char is not self]
 
     def heal(self, target):
         roll = self.dice.roll()

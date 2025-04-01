@@ -5,7 +5,7 @@ from character import *
 class Enemy:
     label = "enemy"
 
-    def __init__(self, name, max_hp, attack_value, defend_value, dice, xp_reward):
+    def __init__(self, name, max_hp, attack_value, defend_value, dice, xp_reward = 15):
         self.name = name
         self.max_hp = max_hp
         self.hp = max_hp

@@ -1,3 +1,10 @@
+from dice import Dice
+from character import *
+from item import *
+from rich import *
+from ui import *
+from inventaire import *
+
 class Shop:
     label = "shop"
     def __init__(self):
@@ -25,6 +32,6 @@ class Shop:
 # Example usage:
 shop = Shop()
 character = []
-character = Character("Hero", 100, 10, 5, Dice("red", 6), 0)
+character = character("Hero", 100, 10, 5, Dice("red", 6), 0)
 shop.show_shop(character)
 character.show_inventory()

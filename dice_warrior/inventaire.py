@@ -1,5 +1,4 @@
 from item import *  
-from character import Character
 from rich import print
 from ui import *
 
