@@ -23,7 +23,7 @@ class Universal_Item:
         self.show_durability()
 
     def show_durability(self):
-        print(f"[{'🛡️ ' * self.durability} {'⛉ ' * (self.durability_max - self.durability)}] {self.durability}/{self.durability_max} durability  ----->   {self.name}\n")
+        print(f"[{'🛡️ ' * self.durability} {'⛉ ' * (self.durability_max - self.durability)}] {self.durability}/{self.durability_max} durabilité  ----->   {self.name}\n")
 
     def apply_bonus(self, character):
         if self.is_usable():
@@ -83,10 +83,10 @@ if __name__ == "__main__":
     warrior.hp -= 40  
     warrior.show_healthbar()  
     
-    helmet = Helmet("Steel Helmet", 10, defend_value=3)
-    sword = Sword("Legendary Sword", 15, attack_value=5)
-    shield = Shield("Iron Shield", 12, defend_value=4)
-    amulet = Amulet("Mystic Amulet", 8, defend_value=2, attack_value=2)
+    helmet = Helmet("Casque en Cuir", 10, defend_value=3)
+    sword = Sword("Epee du Grand Monarque", 15, attack_value=5)
+    shield = Shield("Bouclier en Fer", 12, defend_value=4)
+    amulet = Amulet("Amulette Mystique", 8, defend_value=2, attack_value=2)
     heal_potion = Heal_potion("Extrait de Jouvence", 5)
     
     helmet.apply_bonus(warrior)
