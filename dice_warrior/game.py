@@ -120,6 +120,7 @@ def battle(player, enemy):
         return False
 
 def main():
+    players = []
     console.print("[bold cyan]Bienvenue dans la campagne DnD![/bold cyan]")
     
     knows_classes = console.input("[bold magenta]Connaissez-vous le système des classes ? (o/n) : [/bold magenta]").lower()
