@@ -1,19 +1,20 @@
 from dice import Dice
 from rich import print
+from item import Universal_Item
+from ui import *
 
 class Character:
     label = "character"
 
-    def __init__(self, name, max_hp, attack_value, defend_value, dice):
+    def __init__(self, name, max_hp, attack_value, defend_value, dice,xp,level):
         self.name = name
         self.max_hp = max_hp
         self.hp = max_hp
         self.attack_value = attack_value
         self.defend_value = defend_value
         self.dice = dice
-        self.xp = 0  # Ajout de l'XP
-        self.level = 1  # Ajout du niveau
-        self.xp_needed = 10  # XP nécessaire pour monter de niveau
+        self.xp = 0
+        self.level = 1
 
     def __str__(self):
         return f"I'm {self.name} the {self.label}."
@@ -26,33 +27,25 @@ class Character:
         self.show_healthbar()
 
     def show_healthbar(self):
-        print(f"[{'❤️' * self.hp}{'♡' * (self.max_hp - self.hp)}] {self.hp}/{self.max_hp} hp")
-        print("\n")
+        print_healthbar(self)
 
     def show_xpbar(self):
-        percent = int((self.xp / self.xp_needed) * 20)  
-        print(f"XP: [{'★' * percent}{'✩' * (20 - percent)}] {self.xp}/{self.xp_needed} xp")
+        print_xpbar(self)
     def gain_xp(self, amount):
         self.xp += amount
-        print(f"{self.name} gagne {amount} XP! Total XP: {self.xp}/{self.xp_needed}")
-        while self.xp >= self.xp_needed:
+        self.show_xpbar()
+        if self.xp >= self.xp_needed:
             self.level_up()
 
     def level_up(self):
-        self.xp -= self.xp_needed
         self.level += 1
-        self.xp_needed = int(self.xp_needed * 1.5)  # Augmentation progressive
-        self.max_hp += 5  # Exemple d'amélioration
-        self.attack_value += 2
-        self.defend_value += 1
-        print(f"🎉 {self.name} monte au niveau {self.level}!")
+        self.xp = 0
+        self.xp_needed = self.level * 10
+        print_level_up(self)
+        self.allocate_stats()
 
     def allocate_stats(self):
-        print("\n📊 Attribuez vos points de stats :")
-        options = ["1. +5 HP max", "2. +2 ATK", "3. +2 DEF"]
-        for opt in options:
-            print(opt)
-
+        print_stat_assignment(self)
         choice = input("Choisissez une amélioration (1/2/3) >>> ")
         if choice == "1":
             self.max_hp += 5
@@ -65,7 +58,7 @@ class Character:
             self.defend_value += 2
             print(f"🛡️ {self.name} gagne +2 en DEF !")
         else:
-            print("❌ Choix invalide, aucun bonus attribué.")
+            print_invalid_choice()
 
     def compute_damages(self, roll):
         return self.attack_value + roll
@@ -73,7 +66,7 @@ class Character:
     def attack(self, target):
         roll = self.dice.roll()
         damages = self.compute_damages(roll)
-        print(f"{self.name} [red]attack[/red] with {damages} damages ({self.attack_value} atk + {roll} rng)")
+        print_attack(self, target, damages, roll)
         target.defend(damages)
         self.gain_xp(2)
 
@@ -83,20 +76,28 @@ class Character:
     def defend(self, damages):
         roll = self.dice.roll()
         wounds = self.compute_defend(damages, roll)
-        print(f"{self.name} [green]defend[/green] against {damages} and take {wounds} wounds ({damages} dmg - {self.defend_value} def - {roll} rng)")
+        print_defend(self, damages, wounds, roll)
         self.decrease_hp(wounds)
+
+    def equip(self, item):
+        item.apply_bonus(self)
+        self.equipment.append(item)
+
+    def unequip(self, item):
+        item.remove_bonus(self)
+        self.equipment.remove(item)
 
 class Warrior(Character):
     label = "warrior"
 
     def compute_damages(self, roll):
-        print("🪓 Warrior bonus : + 1,5 * dmg")
+        print("🪓 Warrior bonus : +1,5 * dmg")
         return super().compute_damages(roll) + self.attack_value * 1.5
 
 class Mage(Character):
     label = "mage"
     def compute_defend(self, damages, roll):
-        wounds = super().compute_defend(damages, roll) - int(self.defend_value * 0.75)
+        wounds = super().compute_defend(damages, roll) - self.defend_value * 0.75
         print("🔮 Mage bonus : -3 wounds")
         return max(0, int(wounds))
 
@@ -139,7 +140,7 @@ class Berserker(Character):
 class Healer(Character):
     label = "healer"
 
-    def __init__(self, name, max_hp, attack_value, defend_value, dice, characters):
+    def __init__(self, name, max_hp, attack_value, defend_value, dice, xp,level):
         super().__init__(name, max_hp, attack_value, defend_value, dice)
         self.allies = [char for char in characters if char is not self]
 
