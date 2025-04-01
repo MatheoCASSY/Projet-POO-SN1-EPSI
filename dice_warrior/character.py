@@ -1,6 +1,7 @@
 from dice import Dice
 from rich import print
 from item import Universal_Item
+from ui import *
 
 class Character:
     label = "character"
@@ -26,12 +27,10 @@ class Character:
         self.show_healthbar()
 
     def show_healthbar(self):
-        print(f"[{'❤️' * self.hp}{'♡' * (self.max_hp - self.hp)}] {self.hp}/{self.max_hp} hp")
-        print("\n")
+        print_healthbar(self)
 
     def show_xpbar(self):
-        percent = int((self.xp / self.xp_needed) * 20)  
-        print(f"XP: [{'★' * percent}{'✩' * (20 - percent)}] {self.xp}/{self.xp_needed} xp")
+        print_xpbar(self)
     def gain_xp(self, amount):
         self.xp += amount
         self.show_xpbar()
@@ -42,16 +41,11 @@ class Character:
         self.level += 1
         self.xp = 0
         self.xp_needed = self.level * 10
-        print(f"\n🎉 {self.name} monte au niveau {self.level} ! 🎉")
-        self.show_xpbar()
+        print_level_up(self)
         self.allocate_stats()
 
     def allocate_stats(self):
-        print("\n📊 Attribuez vos points de stats :")
-        options = ["1. +5 HP max", "2. +2 ATK", "3. +2 DEF"]
-        for opt in options:
-            print(opt)
-
+        print_stat_assignment(self)
         choice = input("Choisissez une amélioration (1/2/3) >>> ")
         if choice == "1":
             self.max_hp += 5
@@ -64,7 +58,7 @@ class Character:
             self.defend_value += 2
             print(f"🛡️ {self.name} gagne +2 en DEF !")
         else:
-            print("❌ Choix invalide, aucun bonus attribué.")
+            print_invalid_choice()
 
     def compute_damages(self, roll):
         return self.attack_value + roll
@@ -72,7 +66,7 @@ class Character:
     def attack(self, target):
         roll = self.dice.roll()
         damages = self.compute_damages(roll)
-        print(f"{self.name} [red]attack[/red] with {damages} damages ({self.attack_value} atk + {roll} rng)")
+        print_attack(self, target, damages, roll)
         target.defend(damages)
         self.gain_xp(2)
 
@@ -82,7 +76,7 @@ class Character:
     def defend(self, damages):
         roll = self.dice.roll()
         wounds = self.compute_defend(damages, roll)
-        print(f"{self.name} [green]defend[/green] against {damages} and take {wounds} wounds ({damages} dmg - {self.defend_value} def - {roll} rng)")
+        print_defend(self, damages, wounds, roll)
         self.decrease_hp(wounds)
 
     def equip(self, item):

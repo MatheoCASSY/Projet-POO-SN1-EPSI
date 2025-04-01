@@ -1,4 +1,5 @@
 from rich import print
+from ui import *
 
 
 class Universal_Item:
@@ -23,7 +24,7 @@ class Universal_Item:
         self.show_durability()
 
     def show_durability(self):
-        print(f"[{'🛡️ ' * self.durability} {'⛉ ' * (self.durability_max - self.durability)}] {self.durability}/{self.durability_max} durabilité  ----->   {self.name}\n")
+        print_durability(self)
 
     def apply_bonus(self, character):
         if self.is_usable():
@@ -31,10 +32,10 @@ class Universal_Item:
             character.defend_value += self.defend_value
             character.attack_value += self.attack_value
         else:
-            print(f"⚠️ {self.name} is broken and provides no bonus!")
+            print_item_broken(self)
 
     def remove_bonus(self, character):
-        print(f"⚠️ {character.name} removed {self.name}, losing -{self.defend_value} DEF and -{self.attack_value} ATK!")
+        print_item_removed(character, self)
         character.defend_value -= self.defend_value
         character.attack_value -= self.attack_value
 
@@ -54,11 +55,10 @@ class Heal_potion(Universal_Item):
         if target.hp < target.max_hp:
             healed_hp = min(target.max_hp - target.hp, self.heal_amount)
             target.hp += healed_hp
-            print(f"🧪 {target.name} utilise {self.name} et récupère {healed_hp} HP !")
-            target.show_healthbar()
+            print_heal_potion_used(target, healed_hp)
             self.durability = 0  # Potion consommée
         else:
-            print(f"⚠️ {target.name} a déjà tous ses HP ! Pas besoin d'utiliser {self.name}.")
+            print_no_need_for_heal(target, self.name)
 
 class Helmet(Universal_Item):
     label = "Helmet"
