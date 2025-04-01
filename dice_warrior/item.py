@@ -79,7 +79,7 @@ if __name__ == "__main__":
     class Warrior(Character):
         label = "Warrior"
     
-    warrior = Warrior("Arthur", 10000, 15, 8, None, 0, 1)
+    warrior = Warrior("Arthur", 40, 15, 8, None, 0, 1, 1)
     warrior.hp -= 40  
     warrior.show_healthbar()  
     

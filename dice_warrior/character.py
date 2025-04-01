@@ -1,12 +1,13 @@
 from dice import Dice
 from rich import print
-from item import Universal_Item
+from item import *
 from ui import *
 
 class Character:
     label = "character"
 
-    def __init__(self, name, max_hp, attack_value, defend_value, dice,xp,level):
+    def __init__(self, name, max_hp, attack_value, defend_value, dice,xp,level, inventory=None):
+        from inventaire import Inventaire
         self.name = name
         self.max_hp = max_hp
         self.hp = max_hp
@@ -15,6 +16,8 @@ class Character:
         self.dice = dice
         self.xp = 0
         self.level = 1
+        self.inventory = inventory if inventory else Inventaire()
+
 
     def __str__(self):
         return f"I'm {self.name} the {self.label}."
