@@ -11,8 +11,9 @@ class Character:
         self.attack_value = attack_value
         self.defend_value = defend_value
         self.dice = dice
-        self.xp = 0
-        self.level = 1
+        self.xp = 0  # Ajout de l'XP
+        self.level = 1  # Ajout du niveau
+        self.xp_needed = 10  # XP nécessaire pour monter de niveau
 
     def __str__(self):
         return f"I'm {self.name} the {self.label}."
@@ -33,17 +34,18 @@ class Character:
         print(f"XP: [{'★' * percent}{'✩' * (20 - percent)}] {self.xp}/{self.xp_needed} xp")
     def gain_xp(self, amount):
         self.xp += amount
-        self.show_xpbar()
-        if self.xp >= self.xp_needed:
+        print(f"{self.name} gagne {amount} XP! Total XP: {self.xp}/{self.xp_needed}")
+        while self.xp >= self.xp_needed:
             self.level_up()
 
     def level_up(self):
+        self.xp -= self.xp_needed
         self.level += 1
-        self.xp = 0
-        self.xp_needed = self.level * 10
-        print(f"\n🎉 {self.name} monte au niveau {self.level} ! 🎉")
-        self.show_xpbar()
-        self.allocate_stats()
+        self.xp_needed = int(self.xp_needed * 1.5)  # Augmentation progressive
+        self.max_hp += 5  # Exemple d'amélioration
+        self.attack_value += 2
+        self.defend_value += 1
+        print(f"🎉 {self.name} monte au niveau {self.level}!")
 
     def allocate_stats(self):
         print("\n📊 Attribuez vos points de stats :")
@@ -88,13 +90,13 @@ class Warrior(Character):
     label = "warrior"
 
     def compute_damages(self, roll):
-        print("🪓 Warrior bonus : +1,5 fois ses dmg")
+        print("🪓 Warrior bonus : + 1,5 * dmg")
         return super().compute_damages(roll) + self.attack_value * 1.5
 
 class Mage(Character):
     label = "mage"
     def compute_defend(self, damages, roll):
-        wounds = super().compute_defend(damages, roll) - self.defend_value * 0.75
+        wounds = super().compute_defend(damages, roll) - int(self.defend_value * 0.75)
         print("🔮 Mage bonus : -3 wounds")
         return max(0, int(wounds))
 
@@ -194,6 +196,7 @@ class Gamester(Character):
         print(f"🎲 {self.name} gambles and causes {gamble_value} random damage to {target.name}")
         target.decrease_hp(gamble_value)
 
+"""
 if __name__ == "__main__":
     print("\n")
 
@@ -217,3 +220,4 @@ if __name__ == "__main__":
                 attacker.attack(defender)
         char_7.heal(characters[0])
         char_8.gamble(characters[1])  
+"""
