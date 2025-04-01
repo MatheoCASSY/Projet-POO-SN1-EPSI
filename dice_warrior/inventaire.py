@@ -4,6 +4,7 @@ from ui import *
 from dice import Dice
 from character import *
 
+
 class Inventaire:
     label = "inventaire"
 
@@ -58,7 +59,7 @@ class Inventaire:
 def gerer_personnage(char_1, char_2):
     while True:
         # 🔹 Choix du personnage avant l'action
-        print(f"[1] Quitter [2] {char_1.name} ({char_1.label}) [3] {char_2.name} ({char_2.label}) ")
+        print(f" [1] {char_1.name} ({char_1.label}) [2] {char_2.name} ({char_2.label}) [3] Quitter ")
         character_choice = input("Quel personnage voulez-vous gérer ? : ").strip()
 
         if character_choice == "1":
