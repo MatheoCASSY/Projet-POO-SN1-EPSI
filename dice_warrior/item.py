@@ -79,7 +79,7 @@ if __name__ == "__main__":
     class Warrior(Character):
         label = "Warrior"
     
-    warrior = Warrior("Arthur", 100, 15, 8, None, 0, 1)
+    warrior = Warrior("Arthur", 10000, 15, 8, None, 0, 1)
     warrior.hp -= 40  
     warrior.show_healthbar()  
     
@@ -100,5 +100,3 @@ if __name__ == "__main__":
         shield.use(warrior)
         amulet.use(warrior)
         heal_potion.use(warrior)  # Test de la potion
-
-      
