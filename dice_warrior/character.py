@@ -96,7 +96,7 @@ class Warrior(Character):
 class Mage(Character):
     label = "mage"
     def compute_defend(self, damages, roll):
-        wounds = super().compute_defend(damages, roll) - self.defend_value * 0.75
+        wounds = super().compute_defend(damages, roll) - int(self.defend_value * 0.75)
         print("🔮 Mage bonus : -3 wounds")
         return max(0, int(wounds))
 

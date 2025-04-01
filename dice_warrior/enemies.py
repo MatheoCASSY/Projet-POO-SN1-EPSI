@@ -31,10 +31,17 @@ class Enemy:
     def attack(self, target):
         roll = self.dice.roll()
         damages = self.compute_damages(roll)
-        print(f"{self.name} attacks with {damages} damages ({self.attack_value} atk + {roll} rng)")
-        target.defend(damages)
+        if damages is not None:
+            print(f"{self.name} attacks with {damages} damages ({self.attack_value} atk + {roll} rng)")
+            target.defend(damages)
+        else:
+            print(f"Attack failed! {self.name} could not calculate damages.")
 
     def defend(self, damages):
+        if damages is None:
+            print(f"{self.name} cannot defend, invalid damage value!")
+            return
+        
         roll = self.dice.roll()
         wounds = self.compute_defend(damages, roll)
         print(f"{self.name} defends against {damages} and takes {wounds} wounds ({damages} dmg - {self.defend_value} def - {roll} rng)")
@@ -44,9 +51,16 @@ class Enemy:
             self.drop_xp()
 
     def compute_damages(self, roll):
+        # Ensure this method always returns a valid number
+        if roll is None:
+            print(f"{self.name} failed to roll a dice!")
+            return 0  # Return a default value if roll is None
         return self.attack_value + roll
 
     def compute_defend(self, damages, roll):
+        if damages is None:
+            print(f"{self.name} cannot compute defense with invalid damages!")
+            return 0  # Return a default value if damages are None
         return max(0, damages - self.defend_value - roll)
 
     def drop_xp(self):
@@ -58,10 +72,14 @@ class Goblin(Enemy):
 
     def compute_damages(self, roll):
         print("👹 Goblin mischief: +1 dmg")
+        if roll is None:
+            return 0
         return super().compute_damages(roll) + 1
 
     def compute_defend(self, damages, roll):
         print("👹 Goblin sneakiness: -1 wounds")
+        if damages is None:
+            return 0
         return max(0, super().compute_defend(damages, roll) - 1)
 
 
@@ -70,10 +88,14 @@ class GoblinChief(Enemy):
 
     def compute_damages(self, roll):
         print("💀 Goblin Chief leadership: +2 dmg")
+        if roll is None:
+            return 0
         return super().compute_damages(roll) + 2
 
     def compute_defend(self, damages, roll):
         print("💀 Goblin Chief toughness: +2 defense")
+        if damages is None:
+            return 0
         return max(0, super().compute_defend(damages, roll) + 2)
 
 
@@ -81,12 +103,16 @@ class Boss(Enemy):
     label = "boss"
 
     def compute_damages(self, roll):
+        if roll is None:
+            return 0
         extra_damage = roll // 2
         print(f"👹 Boss's wrath: +{extra_damage} dmg")
         return super().compute_damages(roll) + extra_damage
 
     def compute_defend(self, damages, roll):
         print("⚔️ Boss's resilience: Reduces damage taken by 5")
+        if damages is None:
+            return 0
         return max(0, super().compute_defend(damages, roll) + 5)
 
 class Skeleton(Enemy):
@@ -94,6 +120,8 @@ class Skeleton(Enemy):
 
     def compute_defend(self, damages, roll):
         print("💀 Skeleton durability: -2 wounds")
+        if damages is None:
+            return 0
         return max(0, super().compute_defend(damages, roll) - 2)
 
 
@@ -102,6 +130,8 @@ class Orc(Enemy):
 
     def compute_damages(self, roll):
         print("🪓 Orc brutality: +3 dmg")
+        if roll is None:
+            return 0
         return super().compute_damages(roll) + 3
 
 
@@ -117,6 +147,7 @@ class Troll(Enemy):
     def defend(self, damages):
         super().defend(damages)
         self.regenerate()
+
 
 """
 # Exemple
