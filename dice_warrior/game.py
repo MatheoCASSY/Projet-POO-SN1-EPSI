@@ -87,7 +87,7 @@ def battle(player, enemy):
 
     if player.is_alive():
         print_victory_message(player, enemy)
-        for p in [player for player in players if player.is_alive()]:
+        for p in [player for player in player if player.is_alive()]:
             print_xp_bar(p)
         return True
     else:
