@@ -118,7 +118,7 @@ class Troll(Enemy):
         super().defend(damages)
         self.regenerate()
 
-
+"""
 # Exemple
 if __name__ == "__main__":
     print("\n")
@@ -145,3 +145,4 @@ if __name__ == "__main__":
                 target = enemies[0]
                 enemy.attack(target)
                 target.attack(enemy)
+"""

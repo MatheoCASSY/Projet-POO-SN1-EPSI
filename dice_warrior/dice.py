@@ -22,7 +22,7 @@ class RiggedDice(Dice):
     def roll(self):
         return self.faces
 
-
+"""
 if __name__ == "__main__":
     d1 = Dice("red", 6)
     d2 = Dice("red", 10)
@@ -37,3 +37,4 @@ if __name__ == "__main__":
 
     d1_rigged = RiggedDice("green", 20)
     print(d1_rigged.roll())
+"""
