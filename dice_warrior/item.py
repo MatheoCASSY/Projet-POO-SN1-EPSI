@@ -80,7 +80,7 @@ if __name__ == "__main__":
         label = "Warrior"
     
     warrior = Warrior("Arthur", 100, 15, 8, None, 0, 1)
-    warrior.hp -= 10  
+    warrior.hp -= 40  
     warrior.show_healthbar()  
     
     helmet = Helmet("Steel Helmet", 10, defend_value=3)
@@ -99,6 +99,6 @@ if __name__ == "__main__":
         sword.use(warrior)
         shield.use(warrior)
         amulet.use(warrior)
-    
-    heal_potion.use(warrior)  # Test de la potion
-    heal_potion.use(warrior)  
+        heal_potion.use(warrior)  # Test de la potion
+
+      
