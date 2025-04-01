@@ -12,7 +12,7 @@ class Inventaire:
     
     def add_item(self, item):
         self.items.append(item)
-        print(f"📦 {item.name} ajouté à l'inventaire !")
+        print_item_added(item)
     
     def remove_item(self):
         self.show_inventory()
@@ -20,7 +20,7 @@ class Inventaire:
         item = next((i for i in self.items if i.name.lower() == choice), None)
         if item:
             self.items.remove(item)
-            print(f"🗑️ {item.name} a été jeté !")
+            print_item_removed(item)
         else:
             print("❌ Objet non trouvé dans l'inventaire !")
     
@@ -32,7 +32,7 @@ class Inventaire:
             self.equipped_items[item.label] = item
             self.items.remove(item)
             item.apply_bonus(character)
-            print(f"✅ {character.name} a équipé {item.name}.")
+            print_item_equipped(character, item)
         else:
             print("❌ Objet non trouvable ou inutilisable !")
     
@@ -49,10 +49,10 @@ class Inventaire:
             print("❌ Objet non trouvé parmi les équipements !")
     
     def show_inventory(self):
-        print("📜 Inventaire :", [item.name for item in self.items])
+        print_inventory(self.items)
     
     def show_equipped(self):
-        print("🛡️ Équipement :", {label: item.name for label, item in self.equipped_items.items()})
+        print_equipped(self.equipped_items)
 
 if __name__ == "__main__":
     warrior = Character("Arthur", 100, 15, 8, None, 0, 1)

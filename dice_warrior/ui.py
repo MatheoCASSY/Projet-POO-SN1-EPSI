@@ -159,3 +159,24 @@ def print_enemy_appearance(enemy):
 
 def print_victory_message_final():
     console.print("[bold yellow]🏆 Félicitations! Vous avez vaincu tous les ennemis et triomphé de l'aventure![/bold yellow]")
+
+def print_item_added(item):
+    print(f"📦 {item.name} ajouté à l'inventaire !")
+
+def print_item_removed(item):
+    print(f"🗑️ {item.name} a été jeté !")
+
+def print_item_equipped(character, item):
+    print(f"✅ {character.name} a équipé {item.name}.")
+
+def print_item_unequipped(character, item):
+    print(f"⚠️ {character.name} a retiré {item.name}.")
+
+def print_inventory(items):
+    print("📜 Inventaire :", [item.name for item in items])
+
+def print_equipped(equipped_items):
+    print("🛡️ Équipement :", {label: item.name for label, item in equipped_items.items()})
+
+def print_invalid_choice():
+    print("❌ Option invalide, essayez encore !")
