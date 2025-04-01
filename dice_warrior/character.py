@@ -47,6 +47,15 @@ class Character:
         print_level_up(self)
         self.allocate_stats()
 
+    def xp_needed(self):
+        return 10 + (self.level - 1) * 5  # XP nécessaire par palier (niveau 1 à 2 = 10, niveau 2 à 3 = 15, etc.)
+
+    def gain_xp(self, amount):
+        self.xp += amount
+        self.show_xpbar()
+        while self.xp >= self.xp_needed():
+            self.level_up()
+
     def allocate_stats(self):
         print_stat_assignment(self)
         choice = input("Choisissez une amélioration (1/2/3) >>> ")
@@ -89,6 +98,7 @@ class Character:
     def unequip(self, item):
         item.remove_bonus(self)
         self.equipment.remove(item)
+
 
 class Warrior(Character):
     label = "warrior"
@@ -210,7 +220,7 @@ if __name__ == "__main__":
     char_4 = Paladin("Arthur", 22, 7, 5, Dice("blue", 6))
     char_5 = Ranger("Lina", 19, 9, 2, Dice("green", 6))
     char_6 = Berserker("Grog", 25, 10, 1, Dice("red", 6))
-    char_7 = Healer("Sophia", 18, 5, 4, Dice("yellow", 6))
+    char_7 = Healer("Sophia", 21, 5, 4, Dice("yellow", 6))
     char_8 = Gamester("Jack", 19, 6, 3, Dice("purple", 6))
 
     characters = [char_1, char_2, char_3, char_4, char_5, char_6, char_7, char_8]
