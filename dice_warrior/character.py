@@ -142,7 +142,7 @@ class Healer(Character):
 
     def __init__(self, name, max_hp, attack_value, defend_value, dice, xp,level):
         super().__init__(name, max_hp, attack_value, defend_value, dice)
-        self.allies = [char for char in characters if char is not self]
+        self.allies = [char for char in Character if char is not self]
 
     def heal(self, target):
         roll = self.dice.roll()
