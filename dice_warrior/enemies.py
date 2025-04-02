@@ -40,7 +40,7 @@ class Enemy:
     def defend(self, damages):
         if damages is None:
             print(f"{self.name} cannot defend, invalid damage value!")
-            return
+            return 
         
         roll = self.dice.roll()
         wounds = self.compute_defend(damages, roll)
@@ -51,16 +51,15 @@ class Enemy:
             self.drop_xp()
 
     def compute_damages(self, roll):
-        # Ensure this method always returns a valid number
         if roll is None:
             print(f"{self.name} failed to roll a dice!")
-            return 0  # Return a default value if roll is None
+            return 0
         return self.attack_value + roll
 
     def compute_defend(self, damages, roll):
         if damages is None:
             print(f"{self.name} cannot compute defense with invalid damages!")
-            return 0  # Return a default value if damages are None
+            return 0 
         return max(0, damages - self.defend_value - roll)
 
     def drop_xp(self):

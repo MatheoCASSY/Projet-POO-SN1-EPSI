@@ -146,7 +146,7 @@ def print_victory_message(player, enemy):
     console.print(f"[bold yellow]{player.name} a vaincu {enemy.name} ![/bold yellow]")
 
 def print_xp_bar(player):
-    player.show_xpbar()  # Affichage de la barre d'XP du joueur
+    player.show_xpbar()
 
 def print_defeat_message(player, enemy):
     console.print(f"[bold red]{player.name} a été vaincu par {enemy.name}...[/bold red]")
