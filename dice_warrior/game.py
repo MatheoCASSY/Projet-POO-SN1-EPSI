@@ -17,7 +17,7 @@ def create_character():
         name = console.input("[bold blue]Nom du personnage : [/bold blue]")  
         print_class_choice_prompt(classes)
         class_choice = console.input("[bold green]Classe : [/bold green]")
-        
+
         if class_choice == "?":
             console.print("\n[bold magenta]Détails des classes disponibles :[/bold magenta]")
             for class_name in classes.keys():
@@ -25,36 +25,42 @@ def create_character():
             continue
         
         class_choice = class_choice.capitalize()
-        
+
         if class_choice not in classes:
             print_invalid_class_message()
             continue
 
         console.print(f"[bold green]{describe_class(class_choice)}[/bold green]")
-        
+
         dice_color = console.input("[bold blue]Couleur du dé (ex: rouge, bleu, vert) : [/bold blue]")  
         dice_faces = int(console.input("[bold blue]Nombre de faces du dé (ex: 6, 8, 10) : [/bold blue]"))  
         dice = Dice(dice_color, dice_faces)
-        
+
         max_hp = int(console.input("[bold blue]Entrez la valeur pour max_hp : [/bold blue]"))  
         attack_value = int(console.input("[bold blue]Entrez la valeur pour attack_value : [/bold blue]"))  
         defend_value = int(console.input("[bold blue]Entrez la valeur pour defend_value : [/bold blue]"))  
         
+        xp = 0  # XP initial
+        level = 1  # Niveau initial
+        
         chosen_class = classes[class_choice]
+
         if class_choice == "Healer":
             allies = [char for char in characters]
-            character = chosen_class(name, max_hp, attack_value, defend_value, dice, allies)
+            character = chosen_class(name, max_hp, attack_value, defend_value, dice, xp, level, allies)
         else:
-            character = chosen_class(name, max_hp, attack_value, defend_value, dice)
-        
+            character = chosen_class(name, max_hp, attack_value, defend_value, dice, xp, level)
+
         characters.append(character)
         
         print_character_creation_prompt(character.name, class_choice, max_hp, attack_value, defend_value, dice)
-        
+
         more = print_more_characters_prompt()
         if more.lower() != 'o':
             break
+            
     return characters
+
 
 def battle(player, enemy):
     print_battle_intro(player, enemy)
