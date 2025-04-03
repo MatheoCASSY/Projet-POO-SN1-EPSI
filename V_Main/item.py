@@ -43,6 +43,18 @@ class Universal_Item:
             self.decrease_durability(1)
             if self.durability == 0:
                 self.remove_bonus(character)
+    
+    def decrease_durability(self, amount: int):
+        self.durability = max(0, self.durability - amount)
+        self.show_durability()
+        if self.durability == 0:
+            print_item_broken(self)
+            self.break_item()
+
+def break_item(self):
+    print(f"💥 {self.name} est complètement cassé et inutilisable !")
+    self.attack_value = 0
+    self.defend_value = 0
 
 class Heal_potion(Universal_Item):
     label = "Heal_potion"
@@ -72,26 +84,3 @@ class Shield(Universal_Item):
 class Amulet(Universal_Item):
     label = "Amulet"
 
-if __name__ == "__main__":
-    from character import Character
-    warrior = Character("Arthur", 10000, 15, 8, None)
-    warrior.hp -= 40  
-    warrior.show_healthbar()  
-    
-    helmet = Helmet("Casque en Cuir", 10, defend_value=3)
-    sword = Sword("Epee du Grand Monarque", 15, attack_value=5)
-    shield = Shield("Bouclier en Fer", 12, defend_value=4)
-    amulet = Amulet("Amulette Mystique", 8, defend_value=2, attack_value=2)
-    heal_potion = Heal_potion("Extrait de Jouvence", 5)
-    
-    helmet.apply_bonus(warrior)
-    sword.apply_bonus(warrior)
-    shield.apply_bonus(warrior)
-    amulet.apply_bonus(warrior)
-    
-    for _ in range(5):
-        helmet.use(warrior)
-        sword.use(warrior)
-        shield.use(warrior)
-        amulet.use(warrior)
-        heal_potion.use(warrior)

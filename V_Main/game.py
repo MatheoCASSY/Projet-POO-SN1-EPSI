@@ -99,6 +99,26 @@ def shop_phase(players):
         shop.show_shop(player)
         pause_phase()
 
+def random_event(players):
+    events = [
+        "Un piège s'active ! Un joueur perd 10 HP.",
+        "Un marchand louche propose une affaire risquée...",
+        "Un bandit vole 10 or à un joueur au hasard !",
+        "Une fontaine magique restaure 5 HP à tous les joueurs !"
+    ]
+    event = random.choice(events)
+    console.print(f"[bold yellow]{event}[/bold yellow]")
+
+    if "piège" in event:
+        unlucky_player = random.choice(players)
+        unlucky_player.hp = max(0, unlucky_player.hp - 10)
+    elif "bandit" in event:
+        unlucky_player = random.choice(players)
+        unlucky_player.gold = max(0, unlucky_player.gold - 10)
+    elif "fontaine" in event:
+        for player in players:
+            player.hp = min(player.max_hp, player.hp + 5)
+
 
 def battle(players, enemy): 
     from ui import print_battle_intro, print_health_bars, print_invalid_action_message, print_victory_message, print_defeat_message
@@ -204,7 +224,7 @@ def main():
                 if enemy.is_alive() and player.is_alive():
                     console.print(f"\n[bold blue]{player.name}, c'est votre tour ![/bold blue]")
                     pause_phase()
-                    if not battle(player, enemy):
+                    if not battle(players, enemy):
                         console.print("[red]L'aventure s'arrête ici...[/red]")
                         return
             if enemy.is_alive():
