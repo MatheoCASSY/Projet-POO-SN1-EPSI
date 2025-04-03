@@ -216,7 +216,7 @@ class Gamester(Character):
         target.decrease_hp(gamble_value)
 class Shop:
     def __init__(self):
-        self.price_per_hp = 3  # 3 or pour 1 HP
+        self.price_per_hp = 3  
 
     def show_shop(self, character):
         print(f"\nBienvenue à la boutique, {character.name} !")
@@ -263,10 +263,10 @@ if __name__ == "__main__":
         char_8.gamble(characters[1])  
 """
 if __name__ == "__main__":
-    # Création d'un personnage avec 20 or
+
     character = Warrior("James", 20, 8, 3, Dice("red", 6), gold=20)
     
     shop = Shop()
     
-    # Affichage de l'inventaire et de l'option d'achat
+    
     shop.show_shop(character)
