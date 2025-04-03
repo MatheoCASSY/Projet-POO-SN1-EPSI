@@ -1,11 +1,11 @@
 from dice import Dice
 from rich import print
-from character import *
+from character import Character
 
 class Enemy:
     label = "enemy"
 
-    def __init__(self, name, max_hp, attack_value, defend_value, dice, xp_reward):
+    def __init__(self, name: str, max_hp: int, attack_value: int, defend_value: int, dice: Dice, xp_reward: int = 15):
         self.name = name
         self.max_hp = max_hp
         self.hp = max_hp
@@ -14,126 +14,98 @@ class Enemy:
         self.dice = dice
         self.xp_reward = xp_reward
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"I'm {self.name} the {self.label}."
 
-    def is_alive(self):
+    def is_alive(self) -> bool:
         return self.hp > 0
 
-    def decrease_hp(self, amount):
+    def decrease_hp(self, amount: int):
         self.hp = max(0, self.hp - amount)
         self.show_healthbar()
 
     def show_healthbar(self):
-        print(f"[{'❤️' * self.hp}{'♡' * (self.max_hp - self.hp)}] {self.hp}/{self.max_hp} hp")
-        print("\n")
+        print(f"[{'❤️' * self.hp}{'♡' * (self.max_hp - self.hp)}] {self.hp}/{self.max_hp} hp\n")
 
     def attack(self, target):
         roll = self.dice.roll()
         damages = self.compute_damages(roll)
         if damages is not None:
-            print(f"{self.name} attacks with {damages} damages ({self.attack_value} atk + {roll} rng)")
+            print(f"{self.name} attaque avec {damages} dommages ({self.attack_value} atk + {roll} rng)")
             target.defend(damages)
         else:
             print(f"Attack failed! {self.name} could not calculate damages.")
 
-    def defend(self, damages):
-        if damages is None:
-            print(f"{self.name} cannot defend, invalid damage value!")
-            return
-        
+    def defend(self, damages: int):
         roll = self.dice.roll()
         wounds = self.compute_defend(damages, roll)
-        print(f"{self.name} defends against {damages} and takes {wounds} wounds ({damages} dmg - {self.defend_value} def - {roll} rng)")
+        print(f"{self.name} défend contre {damages} et subit {wounds} blessures ({damages} dmg - {self.defend_value} def - {roll} rng)")
         self.decrease_hp(wounds)
-        
         if not self.is_alive():
             self.drop_xp()
 
-    def compute_damages(self, roll):
-        # Ensure this method always returns a valid number
+    def compute_damages(self, roll: int) -> int:
         if roll is None:
             print(f"{self.name} failed to roll a dice!")
-            return 0  # Return a default value if roll is None
+            return 0
         return self.attack_value + roll
 
-    def compute_defend(self, damages, roll):
+    def compute_defend(self, damages: int, roll: int) -> int:
         if damages is None:
             print(f"{self.name} cannot compute defense with invalid damages!")
-            return 0  # Return a default value if damages are None
+            return 0
         return max(0, damages - self.defend_value - roll)
 
     def drop_xp(self):
-        print(f"🎉 {self.name} is defeated! The player gains {self.xp_reward} XP!")
-        print("\n")
+        print(f"🎉 {self.name} est vaincu ! Le joueur gagne {self.xp_reward} XP !\n")
 
 class Goblin(Enemy):
     label = "goblin"
 
-    def compute_damages(self, roll):
+    def compute_damages(self, roll: int) -> int:
         print("👹 Goblin mischief: +1 dmg")
-        if roll is None:
-            return 0
         return super().compute_damages(roll) + 1
 
-    def compute_defend(self, damages, roll):
+    def compute_defend(self, damages: int, roll: int) -> int:
         print("👹 Goblin sneakiness: -1 wounds")
-        if damages is None:
-            return 0
         return max(0, super().compute_defend(damages, roll) - 1)
-
 
 class GoblinChief(Enemy):
     label = "goblin chief"
 
-    def compute_damages(self, roll):
+    def compute_damages(self, roll: int) -> int:
         print("💀 Goblin Chief leadership: +2 dmg")
-        if roll is None:
-            return 0
         return super().compute_damages(roll) + 2
 
-    def compute_defend(self, damages, roll):
+    def compute_defend(self, damages: int, roll: int) -> int:
         print("💀 Goblin Chief toughness: +2 defense")
-        if damages is None:
-            return 0
         return max(0, super().compute_defend(damages, roll) + 2)
-
 
 class Boss(Enemy):
     label = "boss"
 
-    def compute_damages(self, roll):
-        if roll is None:
-            return 0
+    def compute_damages(self, roll: int) -> int:
         extra_damage = roll // 2
         print(f"👹 Boss's wrath: +{extra_damage} dmg")
         return super().compute_damages(roll) + extra_damage
 
-    def compute_defend(self, damages, roll):
-        print("⚔️ Boss's resilience: Reduces damage taken by 5")
-        if damages is None:
-            return 0
+    def compute_defend(self, damages: int, roll: int) -> int:
+        print("⚔️ Boss's resilience: Réduit les dégâts subis de 5")
         return max(0, super().compute_defend(damages, roll) + 5)
 
 class Skeleton(Enemy):
     label = "skeleton"
 
-    def compute_defend(self, damages, roll):
+    def compute_defend(self, damages: int, roll: int) -> int:
         print("💀 Skeleton durability: -2 wounds")
-        if damages is None:
-            return 0
         return max(0, super().compute_defend(damages, roll) - 2)
-
 
 class Orc(Enemy):
     label = "orc"
 
-    def compute_damages(self, roll):
+    def compute_damages(self, roll: int) -> int:
         print("🪓 Orc brutality: +3 dmg")
-        if roll is None:
-            return 0
         return super().compute_damages(roll) + 3
-
 
 class Troll(Enemy):
     label = "troll"
@@ -144,36 +116,6 @@ class Troll(Enemy):
         print(f"🧌 Troll regeneration: +{regen} hp")
         self.show_healthbar()
 
-    def defend(self, damages):
+    def defend(self, damages: int):
         super().defend(damages)
         self.regenerate()
-
-
-"""
-# Exemple
-if __name__ == "__main__":
-    print("\n")
-
-    goblin_1 = Goblin("Goblin Grunt", 12, 5, 2, Dice("green", 6), xp_reward=10)
-    goblin_2 = Goblin("Goblin Sneak", 10, 6, 1, Dice("green", 6), xp_reward=15)
-    boss = Boss("Dark Overlord", 40, 12, 6, Dice("black", 8), xp_reward=50)
-    skeleton = Skeleton("Bone Walker", 15, 6, 2, Dice("white", 6), xp_reward=20)
-    orc = Orc("Orc Berserker", 22, 9, 3, Dice("red", 6), xp_reward=25)
-    troll = Troll("Forest Troll", 30, 10, 4, Dice("blue", 6), xp_reward=30)
-
-    enemies = [goblin_1, goblin_2, boss, skeleton, orc, troll]
-
-    goblin_1.attack(boss)
-    boss.attack(goblin_1)
-    goblin_2.attack(boss)
-    skeleton.attack(orc)
-    orc.attack(troll)
-    troll.attack(skeleton)
-
-    while all(enemy.is_alive() for enemy in enemies):
-        for enemy in enemies:
-            if enemy.is_alive():
-                target = enemies[0]
-                enemy.attack(target)
-                target.attack(enemy)
-"""

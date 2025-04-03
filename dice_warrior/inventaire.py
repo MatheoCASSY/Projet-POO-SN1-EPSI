@@ -1,7 +1,6 @@
-from item import *  
-from character import Character
+from item import *
 from rich import print
-from ui import *
+from ui import console
 
 class Inventaire:
     label = "inventaire"
@@ -55,9 +54,11 @@ class Inventaire:
         print("🛡️ Équipement :", {label: item.name for label, item in self.equipped_items.items()})
 
 if __name__ == "__main__":
-    warrior = Character("Arthur", 100, 15, 8, None, 0, 1)
+    from character import Character
+    warrior = Character("Arthur", 100, 15, 8, None)
     inventory = Inventaire()
 
+    from item import Helmet, Sword, Heal_potion
     helmet = Helmet("Steel Helmet", 10, defend_value=3)
     sword = Sword("Legendary Sword", 15, attack_value=5)
     heal_potion = Heal_potion("Extrait de Jouvence", 5)
