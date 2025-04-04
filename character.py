@@ -1,18 +1,24 @@
 from dice import Dice
+from rich import print
+from item import Universal_Item
+from ui import *
+from inventaire import *
+
 class Character:
     label = "character"
 
-    def __init__(self, name, max_hp, attack_value, defend_value, dice, gold=0):
+    def __init__(self, name, max_hp, attack_value, defend_value, dice,xp = 0,level = 1,xp_needed = 10,inventory = [], gold = 20):
         self.name = name
         self.max_hp = max_hp
         self.hp = max_hp
         self.attack_value = attack_value
         self.defend_value = defend_value
         self.dice = dice
-        self.gold = gold  # Ajout de l'or au personnage
-        self.xp = 0  # Ajout de l'XP
-        self.level = 1  # Ajout du niveau
-        self.xp_needed = 10  # XP nécessaire pour monter de niveau
+        self.xp = 0
+        self.level = 1
+        self.xp_needed = 10
+        self.inventory = inventory if inventory else Inventaire()
+        self.gold = gold 
 
     def __str__(self):
         return f"I'm {self.name} the {self.label}."
@@ -25,33 +31,25 @@ class Character:
         self.show_healthbar()
 
     def show_healthbar(self):
-        print(f"[{'❤️' * self.hp}{'♡' * (self.max_hp - self.hp)}] {self.hp}/{self.max_hp} hp")
-        print("\n")
+        print_healthbar(self)
 
     def show_xpbar(self):
-        percent = int((self.xp / self.xp_needed) * 20)  
-        print(f"XP: [{'★' * percent}{'✩' * (20 - percent)}] {self.xp}/{self.xp_needed} xp")
+        print_xpbar(self)
     def gain_xp(self, amount):
         self.xp += amount
-        print(f"{self.name} gagne {amount} XP! Total XP: {self.xp}/{self.xp_needed}")
-        while self.xp >= self.xp_needed:
+        self.show_xpbar()
+        if self.xp >= self.xp_needed:
             self.level_up()
 
     def level_up(self):
-        self.xp -= self.xp_needed
         self.level += 1
-        self.xp_needed = int(self.xp_needed * 1.5)  # Augmentation progressive
-        self.max_hp += 5  # Exemple d'amélioration
-        self.attack_value += 2
-        self.defend_value += 1
-        print(f"🎉 {self.name} monte au niveau {self.level}!")
+        self.xp = 0
+        self.xp_needed = self.level * 10
+        print_level_up(self)
+        self.allocate_stats()
 
     def allocate_stats(self):
-        print("\n📊 Attribuez vos points de stats :")
-        options = ["1. +5 HP max", "2. +2 ATK", "3. +2 DEF"]
-        for opt in options:
-            print(opt)
-
+        print_stat_assignment(self)
         choice = input("Choisissez une amélioration (1/2/3) >>> ")
         if choice == "1":
             self.max_hp += 5
@@ -64,7 +62,7 @@ class Character:
             self.defend_value += 2
             print(f"🛡️ {self.name} gagne +2 en DEF !")
         else:
-            print("❌ Choix invalide, aucun bonus attribué.")
+            print_invalid_choice()
 
     def compute_damages(self, roll):
         return self.attack_value + roll
@@ -72,7 +70,7 @@ class Character:
     def attack(self, target):
         roll = self.dice.roll()
         damages = self.compute_damages(roll)
-        print(f"{self.name} [red]attack[/red] with {damages} damages ({self.attack_value} atk + {roll} rng)")
+        print_attack(self, target, damages, roll)
         target.defend(damages)
         self.gain_xp(2)
 
@@ -82,34 +80,22 @@ class Character:
     def defend(self, damages):
         roll = self.dice.roll()
         wounds = self.compute_defend(damages, roll)
-        print(f"{self.name} [green]defend[/green] against {damages} and take {wounds} wounds ({damages} dmg - {self.defend_value} def - {roll} rng)")
+        print_defend(self, damages, wounds, roll)
         self.decrease_hp(wounds)
-        #changement ici
-    def buy_hp(self, price_per_hp=3):
-        """Permet au personnage d'acheter des HP avec de l'or."""
-        if self.gold < price_per_hp:
-            print(f"❌ Vous n'avez pas assez d'or pour acheter des HP. Vous avez {self.gold} or.")
-            return
 
-        max_hp_increase = self.gold // price_per_hp
-        self.gold -= max_hp_increase * price_per_hp
+    def equip(self, item):
+        item.apply_bonus(self)
+        self.equipment.append(item)
 
-        self.max_hp += max_hp_increase
-        self.hp += max_hp_increase
-
-        print(f"🎉 {self.name} a acheté {max_hp_increase} HP avec {max_hp_increase * price_per_hp} or.")
-        self.show_healthbar()
-        print(f"Vous avez maintenant {self.gold} or.")
-
-    def show_inventory(self):
-        """Affiche l'or et les objets du personnage."""
-        print(f"{self.name} a {self.gold} or.")
+    def unequip(self, item):
+        item.remove_bonus(self)
+        self.equipment.remove(item)
 
 class Warrior(Character):
     label = "warrior"
 
     def compute_damages(self, roll):
-        print("🪓 Warrior bonus : + 1,5 * dmg")
+        print("🪓 Warrior bonus : +1,5 * dmg")
         return super().compute_damages(roll) + self.attack_value * 1.5
 
 class Mage(Character):
@@ -158,9 +144,9 @@ class Berserker(Character):
 class Healer(Character):
     label = "healer"
 
-    def __init__(self, name, max_hp, attack_value, defend_value, dice, characters):
+    def __init__(self, name, max_hp, attack_value, defend_value, dice, xp,level):
         super().__init__(name, max_hp, attack_value, defend_value, dice)
-        self.allies = [char for char in characters if char is not self]
+        self.allies = [char for char in Character if char is not self]
 
     def heal(self, target):
         roll = self.dice.roll()
@@ -214,28 +200,6 @@ class Gamester(Character):
         gamble_value = self.dice.roll()
         print(f"🎲 {self.name} gambles and causes {gamble_value} random damage to {target.name}")
         target.decrease_hp(gamble_value)
-class Shop:
-    def __init__(self):
-        self.price_per_hp = 3  
-
-    def show_shop(self, character):
-        print(f"\nBienvenue à la boutique, {character.name} !")
-        character.show_inventory()
-
-        action = input(f"Voulez-vous acheter des HP ? Chaque HP coûte {self.price_per_hp} or. (o/n) : ").lower()
-        if action == 'o':
-            amount = int(input(f"Combien d'HP souhaitez-vous acheter ? Vous avez {character.gold} or : "))
-            total_price = amount * self.price_per_hp
-            if total_price > character.gold:
-                print("❌ Vous n'avez pas assez d'or.")
-            else:
-                character.gold -= total_price
-                character.max_hp += amount
-                character.hp += amount
-                print(f"🎉 Vous avez acheté {amount} HP !")
-                print(f"Il vous reste {character.gold} or.")
-        else:
-            print("Merci de votre visite à la boutique !")
 
 """
 if __name__ == "__main__":
@@ -262,11 +226,3 @@ if __name__ == "__main__":
         char_7.heal(characters[0])
         char_8.gamble(characters[1])  
 """
-if __name__ == "__main__":
-
-    character = Warrior("James", 20, 8, 3, Dice("red", 6), gold=20)
-    
-    shop = Shop()
-    
-    
-    shop.show_shop(character)
