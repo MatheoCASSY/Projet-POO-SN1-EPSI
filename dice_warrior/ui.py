@@ -24,21 +24,27 @@ def print_stat_assignment(character):
 def print_invalid_choice():
     print("❌ Choix invalide, aucun bonus attribué.")
 
-def print_battle_intro(player, enemy):
-    console.print(f"[bold green]{player.name} le {player.__class__.__name__} affronte {enemy.name} ![/bold green]")
+def print_battle_intro(players, enemy):
+    console.print("[bold magenta]Préparez-vous à combattre ![/bold magenta]\n")
+    console.print(f"⚔️ Un goblin apparaît: {enemy.name} !\n")
+    for player in players:
+        console.print(f"[bold green]{player.name} le {player.__class__.__name__} affronte {enemy.name} ![/bold green]\n")
 
-def print_health_bars(player, enemy):
-    player.show_healthbar()
-    enemy.show_healthbar()
+def print_health_bars(players, enemy):
+    for player in players:
+        print_healthbar(player)
+    print_healthbar(enemy)
 
 def print_invalid_action_message():
     console.print("[bold red]Action invalide, veuillez réessayer.[/bold red]")
 
-def print_victory_message(player, enemy):
-    console.print(f"[bold yellow]{player.name} a vaincu {enemy.name} ![/bold yellow]")
+def print_victory_message(players, enemy):
+    for player in players:
+        console.print(f"[bold yellow]{player.name} a vaincu {enemy.name} ![/bold yellow]")
 
-def print_defeat_message(player, enemy):
-    console.print(f"[bold red]{player.name} a été vaincu par {enemy.name}...[/bold red]")
+def print_defeat_message(players, enemy):
+    for player in players:
+        console.print(f"[bold red]{player.name} a été vaincu par {enemy.name}...[/bold red]")
 
 def print_game_over_message():
     console.print("[bold red]💀 Tous les héros sont morts. Game Over![/bold red]")

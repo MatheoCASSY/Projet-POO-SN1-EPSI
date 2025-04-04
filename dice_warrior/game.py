@@ -51,7 +51,7 @@ def create_character():
         else:
             character = chosen_class(name, max_hp, attack_value, defend_value, dice)
 
-        character.gold = 0
+        character.gold = 15
         characters.append(character)
 
         print_character_creation_prompt(character.name, class_choice, max_hp, attack_value, defend_value, dice)
@@ -100,64 +100,75 @@ def shop_phase(players):
 
 
 def battle(players, enemy): 
-    from ui import print_battle_intro, print_health_bars, print_invalid_action_message, print_victory_message, print_defeat_message
+    if not isinstance(players, list):
+        players = [players]
+
     print_battle_intro(players, enemy)
     pause_phase()
 
     while any(player.is_alive() for player in players) and enemy.is_alive():
-        # Affichage des barres de santé
         print_health_bars(players, enemy)
         pause_phase()
 
-        # Chaque joueur attaque à tour de rôle
         for player in players:
-            if player.is_alive():
-                console.print(f"\n[bold blue]{player.name}, c'est votre tour ![/bold blue]")
-                console.print("[bold yellow]Actions disponibles :[/bold yellow]")
-                console.print(" - [green]attaquer[/green]")
-                console.print(" - [blue]inventaire[/blue] (pour gérer vos objets)")
-                console.print(" - [red]abandonner[/red]")
-                console.print(" - [orange]rien faire[/orange]")
-                action = console.input("[bold blue]Que faites-vous ? [/bold blue]").lower()
+            if not player.is_alive():
+                continue
+
+            console.print(f"\n[bold blue]{player.name}, c'est votre tour ![/bold blue]")
+            console.print("[bold yellow]Actions disponibles :[/bold yellow]")
+            console.print(" - [green]attaquer[/green]")
+            console.print(" - [blue]inventaire[/blue] (pour gérer vos objets)")
+            console.print(" - [red]abandonner[/red]")
+            console.print(" - [orange]rien faire[/orange]")
+
+            action = console.input("[bold blue]Que faites-vous ? [/bold blue]").strip().lower()
+            pause_phase()
+
+            if action == "attaquer":
+                player.attack(enemy)
+                pause_phase()
+                if enemy.is_alive():
+                    console.print(
+                        f"[bold red]{enemy.name} riposte après l'attaque de {player.name} ![/bold red]"
+                    )
+                    enemy.attack(player)
+                    pause_phase()
+
+            elif action == "rien faire":
+                console.print(f"[yellow]{player.name} a choisi de ne rien faire...[/yellow]")
                 pause_phase()
 
-                if action == "attaquer":
-                    # Attaque du joueur
-                    player.attack(enemy)
-                    pause_phase()
-                    if enemy.is_alive():
-                        console.print(f"[bold red]{enemy.name} riposte après l'attaque de {player.name} ![/bold red]")
-                        enemy.attack(player)
-                        pause_phase()
-                elif action == "rien faire":
-                    console.print(f"[yellow]{player.name} a choisi de ne rien faire...[/yellow]")
-                    pause_phase()
-                elif action == "inventaire":
-                    manage_inventory(player)
-                    continue
-                elif action == "abandonner":
-                    console.print(f"[bold red]{player.name} a abandonné la bataille...[/bold red]")
-                    pause_phase()
-                    return False
-                else:
-                    print_invalid_action_message()
-                    pause_phase()
-                    continue
+            elif action == "inventaire":
+                manage_inventory(player)
+                continue  # Revenir à la boucle pour le même joueur
 
-        # Si l'ennemi est encore en vie, il attaque un personnage aléatoire
+            elif action == "abandonner":
+                console.print(f"[bold red]{player.name} a abandonné la bataille...[/bold red]")
+                pause_phase()
+                return False
+
+            else:
+                print_invalid_action_message()
+                pause_phase()
+                continue
+
+        # Attaque ennemie si vivant
         if enemy.is_alive():
-            target = random.choice([p for p in players if p.is_alive()])
-            console.print(f"\n[bold red]{enemy.name} attaque spontanément {target.name} ![/bold red]")
-            pause_phase()
-            enemy.attack(target)
-            pause_phase()
+            living_players = [p for p in players if p.is_alive()]
+            if living_players:
+                target = random.choice(living_players)
+                console.print(f"\n[bold red]{enemy.name} attaque spontanément {target.name} ![/bold red]")
+                pause_phase()
+                enemy.attack(target)
+                pause_phase()
 
-        # Vérification de la fin du combat
+        # Fin de combat si tous les joueurs sont morts
         if all(not player.is_alive() for player in players):
             print_defeat_message(players, enemy)
             pause_phase()
             return False
 
+    # Résultat final
     if enemy.is_alive():
         print_defeat_message(players, enemy)
         return False

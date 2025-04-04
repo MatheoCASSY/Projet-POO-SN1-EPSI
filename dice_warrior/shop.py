@@ -7,16 +7,16 @@ from ui import console
 class Shop:
     label = "shop"
     def __init__(self):
-        self.price_per_hp = 3  # 3 or pour 1 HP
+        self.priceforeach = 3
 
     def show_shop(self, character: Character):
         print(f"\nBienvenue à la boutique, {character.name} !")
         character.inventory.show_inventory()
 
-        action = input(f"Voulez-vous acheter des HP ? Chaque HP coûte {self.price_per_hp} or. (o/n) : ").lower()
+        action = input(f"Voulez-vous acheter des HP ? Chaque HP coûte {self.priceforeach} or. (o/n) : ").lower()
         if action == 'o':
             amount = int(input(f"Combien d'HP souhaitez-vous acheter ? Vous avez {character.gold} or : "))
-            total_price = amount * self.price_per_hp
+            total_price = amount * self.priceforeach
             if total_price > character.gold:
                 print("❌ Vous n'avez pas assez d'or.")
             else:
