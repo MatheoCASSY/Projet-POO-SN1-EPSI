@@ -41,18 +41,17 @@ def create_character():
         dice_faces = int(console.input("[bold blue]Nombre de faces du dé (ex: 6, 8, 10) : [/bold blue]"))
         dice = Dice(dice_color, dice_faces)
 
-        max_hp = int(console.input("[bold blue]Entrez la valeur pour max_hp : [/bold blue]"))
-        attack_value = int(console.input("[bold blue]Entrez la valeur pour attack_value : [/bold blue]"))
-        defend_value = int(console.input("[bold blue]Entrez la valeur pour defend_value : [/bold blue]"))
+        max_hp = int(console.input("[bold blue]Entrez votre nombre de points de vie : [/bold blue]"))
+        attack_value = int(console.input("[bold blue]Entrez la valeur pour vos dégats de base : [/bold blue]"))
+        defend_value = int(console.input("[bold blue]Entrez la valeur de votre défense : [/bold blue]"))
 
         chosen_class = classes[class_choice]
         if class_choice == "Healer":
-            # Pour le Healer, passer la liste des alliés déjà créés
             character = chosen_class(name, max_hp, attack_value, defend_value, dice, allies=characters)
         else:
             character = chosen_class(name, max_hp, attack_value, defend_value, dice)
 
-        character.gold = 0  # Initialiser l'or à 0
+        character.gold = 0
         characters.append(character)
 
         print_character_creation_prompt(character.name, class_choice, max_hp, attack_value, defend_value, dice)
